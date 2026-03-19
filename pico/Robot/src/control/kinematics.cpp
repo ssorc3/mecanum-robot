@@ -50,15 +50,23 @@ void initMotors() {
 void applyMecanum(float vx, float vy, float wz) {
     float vx_n = clampAbs(vx, 1.0f);
     float vy_n = clampAbs(vy, 1.0f);
+    if (INVERT_VY) {
+        vy_n = -vy_n;
+    }
+    float vy_left = vy_n;
+    float vy_right = vy_n;
+    if (INVERT_VY_RIGHT) {
+        vy_right = -vy_right;
+    }
     float wz_n = clampAbs(wz, 1.0f);
 
     float wz_ccw = -wz_n; // Protocol uses clockwise positive.
-    float k = (WHEELBASE_MM + TRACK_WIDTH_MM) / WHEEL_RADIUS_MM;
+    float k = ((WHEELBASE_MM + TRACK_WIDTH_MM) / WHEEL_RADIUS_MM) * ROTATION_SCALE;
 
-    float w_fl = vx_n + vy_n - (k * wz_ccw);
-    float w_bl = vx_n - vy_n - (k * wz_ccw);
-    float w_fr = vx_n - vy_n + (k * wz_ccw);
-    float w_br = vx_n + vy_n + (k * wz_ccw);
+    float w_fl = vx_n + vy_left - (k * wz_ccw);
+    float w_bl = vx_n - vy_left - (k * wz_ccw);
+    float w_fr = vx_n - vy_right + (k * wz_ccw);
+    float w_br = vx_n + vy_right + (k * wz_ccw);
 
     float max_abs = fabsf(w_fl);
     if (fabsf(w_bl) > max_abs) max_abs = fabsf(w_bl);
@@ -76,6 +84,11 @@ void applyMecanum(float vx, float vy, float wz) {
     int pwm_bl = static_cast<int>(w_bl * PWM_RANGE);
     int pwm_fr = static_cast<int>(w_fr * PWM_RANGE);
     int pwm_br = static_cast<int>(w_br * PWM_RANGE);
+
+    if (M1_INVERT) pwm_fl = -pwm_fl;
+    if (M2_INVERT) pwm_bl = -pwm_bl;
+    if (M3_INVERT) pwm_fr = -pwm_fr;
+    if (M4_INVERT) pwm_br = -pwm_br;
 
     if (ENABLE_DEBUG_SERIAL) {
         static uint32_t last_debug_ms = 0;
