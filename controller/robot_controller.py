@@ -115,6 +115,11 @@ def main():
     sock.bind(("", args.port))
     sock.setblocking(False)
 
+    telemetry_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    telemetry_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    telemetry_sock.bind(("", 4211))
+    telemetry_sock.setblocking(False)
+
     target = (args.ip, args.port)
     period = 1.0 / args.rate
     seq = 0
@@ -142,7 +147,7 @@ def main():
 
         while True:
             try:
-                data, _addr = sock.recvfrom(2048)
+                data, _addr = telemetry_sock.recvfrom(2048)
             except BlockingIOError:
                 break
             telemetry = parse_telemetry(data)

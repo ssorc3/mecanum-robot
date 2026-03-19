@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "config/config.h"
+#include "util/log.h"
 
 static float clampAbs(float value, float limit) {
     if (value > limit) {
@@ -90,20 +91,18 @@ void applyMecanum(float vx, float vy, float wz) {
     if (M3_INVERT) pwm_fr = -pwm_fr;
     if (M4_INVERT) pwm_br = -pwm_br;
 
-    if (ENABLE_DEBUG_SERIAL) {
-        static uint32_t last_debug_ms = 0;
-        uint32_t now = millis();
-        if (now - last_debug_ms >= 200) {
-            last_debug_ms = now;
-            Serial.print("[MOTOR] fl=");
-            Serial.print(pwm_fl);
-            Serial.print(" bl=");
-            Serial.print(pwm_bl);
-            Serial.print(" fr=");
-            Serial.print(pwm_fr);
-            Serial.print(" br=");
-            Serial.println(pwm_br);
-        }
+    static uint32_t last_debug_ms = 0;
+    uint32_t now = millis();
+    if (now - last_debug_ms >= 200) {
+        last_debug_ms = now;
+        logPrint("[MOTOR] fl=");
+        logPrint(pwm_fl);
+        logPrint(" bl=");
+        logPrint(pwm_bl);
+        logPrint(" fr=");
+        logPrint(pwm_fr);
+        logPrint(" br=");
+        logPrintln(pwm_br);
     }
     
     setMotor(M1_IN1_PIN, M1_IN2_PIN, pwm_fl);

@@ -25,6 +25,7 @@ public:
 private:
     WiFiUDP udp_socket_;
     uint16_t listen_port_;
+    uint16_t telemetry_port_;
     IPAddress remote_ip_;
     uint16_t remote_port_;
     bool remote_address_learned_;

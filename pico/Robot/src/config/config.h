@@ -9,6 +9,8 @@ const uint16_t CONTROL_LOOP_PERIOD_MS = 1000 / CONTROL_LOOP_FREQUENCY_HZ; // ms
 const uint16_t TELEMETRY_PERIOD_MS = 500; // ms
 const uint16_t COMMAND_TIMEOUT_MS = 300; // ms
 
+const int16_t CONTROL_INPUT_MAX = 255; // Expected max absolute input for vx/vy/wz.
+
 const bool ENABLE_DEBUG_SERIAL = true;
 
 const float WHEEL_RADIUS_MM = 31.0f;
